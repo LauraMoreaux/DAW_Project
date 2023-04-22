@@ -36,16 +36,17 @@ function TabPanel(props) {
 
 const Home = () => {
   const [value, setValue] = useState(0);
+  const [loggedIn, setLoggedIn] = useState(false);
 
   const handleChange = (event, newValue) => {
     setValue(newValue);
   };
-
-  const loggedIn = true;
-
   return (
     <Container component="main" maxWidth="xs">
       <Stack className={"main-div"} spacing={4}>
+        <Button onClick={() => setLoggedIn(!loggedIn)}>
+          {loggedIn ? "Log out view" : "Login view"}
+        </Button>
         {loggedIn ? (
           <>
             <Typography component="h1" variant="h5">
