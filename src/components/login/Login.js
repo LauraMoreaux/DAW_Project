@@ -11,8 +11,11 @@ import {
   Stack,
 } from "@mui/material";
 import Box from "@mui/material/Box";
+import firestore from "../../firebase";
+import { addDoc, collection } from "@firebase/firestore";
 
 const Login = () => {
+  const ref = collection(firestore, "messages");
   const handleSubmit = (event) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
@@ -20,7 +23,17 @@ const Login = () => {
       email: data.get("email"),
       password: data.get("password"),
     });
+    let firebaseData = {
+      message: data.get("email"),
+    };
+
+    try {
+      addDoc(ref, firebaseData);
+    } catch (e) {
+      console.log(e);
+    }
   };
+
   return (
     <Container component="main" maxWidth="xs">
       <Stack className={"main-div"}>
