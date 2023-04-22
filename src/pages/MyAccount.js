@@ -1,10 +1,6 @@
 import React from "react";
-import Stack from "@mui/material/Stack";
+import MyAccount from "../components/myAccount/MyAccount";
 
 export default function myAccount() {
-  return (
-    <Stack>
-      <h2>This is my account page</h2>
-    </Stack>
-  );
+  return <MyAccount />;
 }
