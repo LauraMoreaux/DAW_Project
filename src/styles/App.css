@@ -6,11 +6,32 @@
 .main-div {
 display: flex;
 justify-content: start;
-height: 70vh;
+height: 100vh;
 margin: 25% 5% 5%;
 }
 
 a {
   text-decoration: none;
   color: inherit;
+}
+
+.text-area-width {
+  width: 100%;
+  font-family: "Roboto","Helvetica","Arial",sans-serif;
+  font-weight: 400;
+  font-size: 1rem;
+  line-height: 1.4375em;
+  letter-spacing: 0.00938em;
+  color: rgba(0, 0, 0, 0.87);
+  box-sizing: border-box;
+  position: relative;
+  cursor: text;
+  display: inline-flex;
+  align-items: center;
+  border-radius: 4px;
+}
+#customized-hook-demo-label + .focused {
+  border-color: #1976d2;
+  border-width: 2.5px;
+  box-shadow: unset;
 }
