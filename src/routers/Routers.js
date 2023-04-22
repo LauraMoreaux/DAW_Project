@@ -5,6 +5,7 @@ import Login from "../pages/Login";
 import MyAccount from "../pages/MyAccount";
 import Header from "../components/header/Header";
 import Footer from "../components/footer/Footer";
+import Registration from "../components/login/Registration";
 
 const Router = () => {
   return (
@@ -13,6 +14,7 @@ const Router = () => {
       <Routes>
         <Route path="/" element={<Home />}></Route>
         <Route path="/login" element={<Login />}></Route>
+        <Route path="/registration" element={<Registration />}></Route>
         <Route path="/my-account" element={<MyAccount />}></Route>
       </Routes>
       <Footer />
