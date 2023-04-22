@@ -5,6 +5,7 @@ import { Button, List, ListItem, Stack, Container } from "@mui/material";
 import Tabs from "@mui/material/Tabs";
 import Tab from "@mui/material/Tab";
 import Box from "@mui/material/Box";
+import CarouselCards from "../carousel/CarouselCards";
 
 function a11yProps(index) {
   return {
@@ -39,39 +40,54 @@ const Home = () => {
   const handleChange = (event, newValue) => {
     setValue(newValue);
   };
+
+  const loggedIn = true;
+
   return (
-    //
     <Container component="main" maxWidth="xs">
       <Stack className={"main-div"} spacing={4}>
-        <Typography>
-          Bienvenido a nuestra web para encontrar mentores o mentorizados y
-          realizar en conjunto el proyecto de tu FP
-        </Typography>
-        <Typography>Las ventajas de usar esta web son:</Typography>
-        <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
-          <Tabs value={value} onChange={handleChange}>
-            <Tab label="Quiero ser mentorizado" {...a11yProps(0)} />
-            <Tab label="Quiero ser mentor" {...a11yProps(1)} />
-          </Tabs>
-        </Box>
-        <TabPanel value={value} index={0}>
-          <List>
-            <ListItem>Es gratuito</ListItem>
-            <ListItem>Tu mentor es un profesional</ListItem>
-          </List>
-        </TabPanel>
-        <TabPanel value={value} index={1}>
-          <List>
-            <ListItem>Es gratuito</ListItem>
-            <ListItem>Podrás poner en práctica tus dotes como senior</ListItem>
-          </List>
-        </TabPanel>
-        <Link to={"/registration"}>
-          <Button variant={"outlined"}>Regístrate</Button>
-        </Link>
-        <Link to={"/login"}>
-          <Button variant={"contained"}>Login</Button>
-        </Link>
+        {loggedIn ? (
+          <>
+            <Typography component="h1" variant="h5">
+              Encuentra a tu mentor/mentorizado:
+            </Typography>
+            <CarouselCards />
+          </>
+        ) : (
+          <>
+            <Typography>
+              Bienvenido a nuestra web para encontrar mentores o mentorizados y
+              realizar en conjunto el proyecto de tu FP
+            </Typography>
+            <Typography>Las ventajas de usar esta web son:</Typography>
+            <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
+              <Tabs value={value} onChange={handleChange}>
+                <Tab label="Quiero ser mentorizado" {...a11yProps(0)} />
+                <Tab label="Quiero ser mentor" {...a11yProps(1)} />
+              </Tabs>
+            </Box>
+            <TabPanel value={value} index={0}>
+              <List>
+                <ListItem>Es gratuito</ListItem>
+                <ListItem>Tu mentor es un profesional</ListItem>
+              </List>
+            </TabPanel>
+            <TabPanel value={value} index={1}>
+              <List>
+                <ListItem>Es gratuito</ListItem>
+                <ListItem>
+                  Podrás poner en práctica tus dotes como senior
+                </ListItem>
+              </List>
+            </TabPanel>
+            <Link to={"/registration"}>
+              <Button variant={"outlined"}>Regístrate</Button>
+            </Link>
+            <Link to={"/login"}>
+              <Button variant={"contained"}>Login</Button>
+            </Link>
+          </>
+        )}
       </Stack>
     </Container>
   );
