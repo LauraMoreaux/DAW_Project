@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import Typography from "@mui/material/Typography";
 import {
@@ -6,79 +6,93 @@ import {
   Container,
   TextField,
   Grid,
-  FormControlLabel,
-  Checkbox,
   Stack,
+  Snackbar,
+  Alert,
 } from "@mui/material";
 import Box from "@mui/material/Box";
 import firestore from "../../firebase";
-import { addDoc, collection } from "@firebase/firestore";
+import { collection, getDocs, query, where } from "@firebase/firestore";
 
 const Login = () => {
-  const ref = collection(firestore, "messages");
-  const handleSubmit = (event) => {
+  const [user, setUser] = useState(null);
+  const [error, setError] = useState({ value: false, message: undefined });
+  const ref = collection(firestore, "users");
+
+  const handleSubmit = async (event) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
-    console.log({
-      email: data.get("email"),
-      password: data.get("password"),
+    const userEmail = data.get("email");
+    const q = query(ref, where("email", "==", userEmail));
+    const querySnapshot = await getDocs(q);
+    querySnapshot.forEach((doc) => {
+      if (doc.data().password === data.get("password")) {
+        setError({ value: false, message: undefined });
+        setUser(doc.data());
+      }
     });
-    let firebaseData = {
-      message: data.get("email"),
-    };
-
-    try {
-      addDoc(ref, firebaseData);
-    } catch (e) {
-      console.log(e);
-    }
+    setError({ value: true, message: "Prueba con otro email o contraseña" });
   };
 
   return (
     <Container component="main" maxWidth="xs">
       <Stack className={"main-div"}>
         <Typography component="h1" variant="h5">
-          Login
+          {!user ? "Login" : "Bienvenido " + user.email}
         </Typography>
-        <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
-          <TextField
-            margin="normal"
-            required
-            fullWidth
-            id="email"
-            label="Email Address"
-            name="email"
-            autoComplete="email"
-            autoFocus
-          />
-          <TextField
-            margin="normal"
-            required
-            fullWidth
-            name="password"
-            label="Password"
-            type="password"
-            id="password"
-            autoComplete="current-password"
-          />
-          <FormControlLabel
-            control={<Checkbox value="remember" color="primary" />}
-            label="Recuérdame"
-          />
-          <Button
-            type="submit"
-            fullWidth
-            variant="contained"
-            sx={{ mt: 3, mb: 2 }}
+        {!user ? (
+          <Box
+            component="form"
+            onSubmit={handleSubmit}
+            noValidate
+            sx={{ mt: 1 }}
           >
-            Login
-          </Button>
-          <Grid container>
-            <Grid item>
-              <Link to={"/registration"}>No tienes cuenta? Regístrate</Link>
+            <TextField
+              margin="normal"
+              required
+              fullWidth
+              id="email"
+              label="Email Address"
+              name="email"
+              autoComplete="email"
+              autoFocus
+              onChange={() => setError({ value: false, message: undefined })}
+            />
+            <TextField
+              margin="normal"
+              required
+              fullWidth
+              name="password"
+              label="Password"
+              type="password"
+              id="password"
+              autoComplete="current-password"
+              onChange={() => setError({ value: false, message: undefined })}
+            />
+            <Snackbar open={error.value} autoHideDuration={500}>
+              <Alert severity="error" sx={{ width: "100%" }}>
+                {error.message}
+              </Alert>
+            </Snackbar>{" "}
+            <Button
+              type="submit"
+              fullWidth
+              variant="contained"
+              sx={{ mt: 3, mb: 2 }}
+            >
+              Login
+            </Button>
+            <Grid container>
+              <Grid item>
+                <Link to={"/registration"}>No tienes cuenta? Regístrate</Link>
+              </Grid>
             </Grid>
-          </Grid>
-        </Box>
+          </Box>
+        ) : (
+          <Link to={"/"}>
+            <Button variant={"contained"}>Mira tus posibles match</Button>
+          </Link>
+        )}
       </Stack>
     </Container>
   );
