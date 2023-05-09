@@ -21,8 +21,10 @@ const Login = () => {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
+    // form data
     const data = new FormData(event.currentTarget);
     const userEmail = data.get("email");
+    // firebase
     const q = query(ref, where("email", "==", userEmail));
     const querySnapshot = await getDocs(q);
     querySnapshot.forEach((doc) => {
@@ -31,6 +33,7 @@ const Login = () => {
         setUser(doc.data());
       }
     });
+    //handle error
     setError({ value: true, message: "Prueba con otro email o contraseña" });
   };
 
