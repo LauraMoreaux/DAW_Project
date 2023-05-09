@@ -1,5 +1,5 @@
 import React from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import Typography from "@mui/material/Typography";
 import {
   Button,
@@ -15,15 +15,28 @@ import {
 import Box from "@mui/material/Box";
 import Avatar from "@mui/material/Avatar";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
+import { addDoc, collection } from "@firebase/firestore";
+import firestore from "../../firebase";
 
 const Registration = () => {
-  const handleSubmit = (event) => {
+  const navigate = useNavigate();
+  const ref = collection(firestore, "users");
+  const handleSubmit = async (event) => {
     event.preventDefault();
+    //form data
     const data = new FormData(event.currentTarget);
-    console.log({
-      email: data.get("email"),
-      password: data.get("password"),
-    });
+    const formValues = Object.fromEntries(data);
+    const formattedData = {
+      ...formValues,
+      mentor: data.get("mentor") === "mentor",
+    };
+    // firebase
+
+    const newUser = await addDoc(ref, formattedData);
+    if (newUser.id) {
+      console.log(newUser.id);
+      navigate("/my-account");
+    }
   };
   return (
     <>
@@ -54,7 +67,7 @@ const Registration = () => {
                     <RadioGroup
                       aria-labelledby="demo-radio-buttons-group-label"
                       defaultValue="mentorizado"
-                      name="radio-buttons-group"
+                      name="mentor"
                       sx={{ flexDirection: "row" }}
                     >
                       <FormControlLabel
