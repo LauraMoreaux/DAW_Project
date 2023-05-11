@@ -31,6 +31,7 @@ const Login = () => {
       if (doc.data().password === data.get("password")) {
         setError({ value: false, message: undefined });
         setUser(doc.data());
+        localStorage.setItem("user", JSON.stringify(data.get("email")));
       }
     });
     //handle error

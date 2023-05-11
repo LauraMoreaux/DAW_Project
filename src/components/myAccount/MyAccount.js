@@ -1,16 +1,36 @@
-import React from "react";
+import React, { useEffect } from "react";
 import Typography from "@mui/material/Typography";
 import { Container, Stack, TextField, Grid, Box, Button } from "@mui/material";
 import TextFieldLanguages from "../textField/TextFieldLanguages";
 import TextareaAutosize from "@mui/material/TextareaAutosize";
 
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { addDoc, collection } from "@firebase/firestore";
+import firestore from "../../firebase";
 
 const MyAccount = () => {
-  const handleSubmit = (event) => {
+  const navigate = useNavigate();
+  const ref = collection(firestore, "users");
+
+  useEffect(() => {
+    const user = localStorage.getItem("user");
+    if (!user) {
+      navigate("/login");
+    }
+  }, []);
+
+  const handleSubmit = async (event) => {
     event.preventDefault();
+    //form data
     const data = new FormData(event.currentTarget);
-    console.log(data);
+    const formValues = Object.fromEntries(data);
+    console.log(formValues);
+    // firebase
+    /*    const newUser = await addDoc(ref, "");
+    if (newUser.id) {
+      console.log(newUser.id);
+      navigate("/my-account");
+    }*/
   };
   return (
     <Container component="main" maxWidth="xs">
@@ -20,7 +40,7 @@ const MyAccount = () => {
         </Typography>
         <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
           <Grid container spacing={2}>
-            <Grid item xs={12} sm={6}>
+            <Grid item xs={12}>
               <TextField
                 margin="normal"
                 fullWidth
@@ -30,7 +50,7 @@ const MyAccount = () => {
                 inputProps={{ readOnly: true }}
               />
             </Grid>
-            <Grid item xs={12} sm={6} textAlign={"left"}>
+            <Grid item xs={12} textAlign={"left"}>
               <Typography component="h5" variant="body1">
                 ¿Qué quieres que sepan de ti?
               </Typography>

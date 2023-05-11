@@ -35,6 +35,7 @@ const Registration = () => {
     const newUser = await addDoc(ref, formattedData);
     if (newUser.id) {
       console.log(newUser.id);
+      localStorage.setItem("user", JSON.stringify(data.get("email")));
       navigate("/my-account");
     }
   };
