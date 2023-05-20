@@ -81,15 +81,22 @@ function CarouselCards() {
               <AccountCircleIcon />
               <Typography variant={"body2"}>{step?.firstName}</Typography>
               <Typography variant={"caption"}>{step?.description}</Typography>
-              {!!step?.tecnologies &&
-                step.tecnologies.map((x, index) => (
-                  <Chip
-                    label={x}
-                    color="primary"
-                    variant="outlined"
-                    key={index + "tech"}
-                  />
-                ))}
+              <Stack
+                flexDirection={"row"}
+                flexWrap={"wrap"}
+                justifyContent={"center"}
+              >
+                {!!step?.tecnologies &&
+                  step.tecnologies.map((x, index) => (
+                    <Chip
+                      label={x}
+                      color="primary"
+                      variant="outlined"
+                      key={index + "tech"}
+                      sx={{ mt: 1, mr: 1 }}
+                    />
+                  ))}
+              </Stack>
             </Stack>
           );
         })}
