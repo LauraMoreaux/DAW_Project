@@ -96,11 +96,7 @@ const MyAccount = () => {
           </Button>
           <Grid container justifyContent={"center"} my={3}>
             <Grid item>
-              <Typography
-                component="h5"
-                variant="h6"
-                color={disableButton ? "grey" : "initial"}
-              >
+              <Typography component="h5" variant="h6">
                 ¿Todo listo?
               </Typography>
             </Grid>
