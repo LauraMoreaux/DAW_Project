@@ -15,19 +15,19 @@ const Header = () => {
   return (
     <AppBar>
       <Toolbar sx={{ justifyContent: "space-between" }}>
+        <Link to={"/my-account"}>
+          <IconButton
+            size="large"
+            edge="start"
+            color="inherit"
+            aria-label="menu"
+            sx={{ mr: 2 }}
+          >
+            <MenuIcon />
+          </IconButton>
+        </Link>
         {!!loggedUser ? (
           <>
-            <Link to={"/my-account"}>
-              <IconButton
-                size="large"
-                edge="start"
-                color="inherit"
-                aria-label="menu"
-                sx={{ mr: 2 }}
-              >
-                <MenuIcon />
-              </IconButton>
-            </Link>
             <Link to={"/"}>
               <Typography variant="h6" component="div">
                 Mentor Match
