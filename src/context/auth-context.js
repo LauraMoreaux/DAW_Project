@@ -107,4 +107,5 @@ const fetchLogin = async (email, password, callback) => {
       return callback(new Error("Prueba con otro email o contraseña"));
     }
   });
+  return callback(new Error("Prueba con otro email o contraseña"));
 };
