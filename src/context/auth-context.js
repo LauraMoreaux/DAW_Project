@@ -20,10 +20,14 @@ const initialState = {
 export const ContextProvider = (props) => {
   const [state, setState] = useState(initialState);
 
-  const setLoginPending = (isLoginPending) => setState({ isLoginPending });
-  const setLoginSuccess = (loggedUser) => setState({ loggedUser });
-  const setLoginError = (loginError) => setState({ loginError });
+  const setLoginPending = (isLoginPending) =>
+    setState((prevState) => ({ ...prevState, isLoginPending }));
 
+  const setLoginSuccess = (loggedUser) => {
+    setState((prevState) => ({ ...prevState, loggedUser }));
+  };
+  const setLoginError = (loginError) =>
+    setState((prevState) => ({ ...prevState, loginError }));
   useEffect(() => {
     setLoginPending(true);
     async function checkLoggedUser() {
@@ -31,15 +35,15 @@ export const ContextProvider = (props) => {
       const docRef = doc(firestore, "users", userIDStoraged);
       if (userIDStoraged) {
         const docSnap = await getDoc(docRef);
-        setLoginPending(false);
         if (docSnap.exists()) {
-          setLoginSuccess(docSnap.data("email"));
+          const { email: emailBBDD } = docSnap.data();
+          setLoginSuccess(emailBBDD);
         } else {
           localStorage.removeItem("userID");
         }
       }
     }
-    checkLoggedUser();
+    checkLoggedUser().then(() => setLoginPending(false));
   }, []);
 
   const login = (email, password) => {
@@ -61,9 +65,9 @@ export const ContextProvider = (props) => {
     setLoginPending(false);
     setLoginSuccess(null);
     setLoginError(null);
+    localStorage.removeItem("userID");
   };
 
-  console.log("Context", state.loggedUser);
   return (
     <AuthContext.Provider
       value={{
