@@ -58,11 +58,11 @@ const Home = () => {
 
   return (
     <Container component="main" maxWidth="xs">
-      <Stack className={"main-div"} spacing={4}>
+      <Stack className={"main-div"} spacing={5}>
         {!!loggedUser ? (
           <>
-            <Typography component="h1" variant="h5">
-              Encuentra a tu mentor/mentorizado:
+            <Typography component="h3" variant="body1">
+              Es el momento de swipear y dar a match a tu perfil elegido
             </Typography>
             <CarouselCards />
           </>
