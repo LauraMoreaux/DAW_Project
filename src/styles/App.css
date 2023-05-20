@@ -6,7 +6,7 @@
 .main-div {
 display: flex;
 justify-content: start;
-height: 100vh;
+min-height: 70vh;
 margin: 25% 5% 5%;
 }
 
@@ -29,6 +29,9 @@ a {
   display: inline-flex;
   align-items: center;
   border-radius: 4px;
+}
+#customized-hook-demo-label {
+  font-weight: 400;
 }
 #customized-hook-demo-label + .focused {
   border-color: #1976d2;
