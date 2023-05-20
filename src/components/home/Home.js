@@ -12,7 +12,7 @@ import {
 import Tabs from "@mui/material/Tabs";
 import Tab from "@mui/material/Tab";
 import Box from "@mui/material/Box";
-import CarouselCards from "../carousel/CarouselCards";
+import CarouselCards from "../carousel/Carousel";
 import { AuthContext } from "../../context/auth-context";
 
 function a11yProps(index) {
