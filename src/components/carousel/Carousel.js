@@ -13,12 +13,11 @@ import { Chip, Stack } from "@mui/material";
 import FavoriteIcon from "@mui/icons-material/Favorite";
 
 function CarouselCards() {
-  const { mentors } = useProfiles();
+  const { profiles } = useProfiles();
   const theme = useTheme();
   const [activeStep, setActiveStep] = React.useState(0);
-  const maxSteps = mentors.length;
+  const maxSteps = profiles.length;
 
-  console.log("carousel", mentors);
   const handleNext = () => {
     setActiveStep((prevActiveStep) => prevActiveStep + 1);
   };
@@ -27,7 +26,23 @@ function CarouselCards() {
     setActiveStep((prevActiveStep) => prevActiveStep - 1);
   };
 
-  if (mentors.length < 1) {
+  const MailTo = ({ children }) => {
+    return (
+      <a
+        href={`mailto:${
+          profiles[activeStep].email
+        }?subject=${encodeURIComponent(
+          "¡Hola! Quiero ponerme en contacto contigo desde Mentor Match"
+        )}&body=${encodeURIComponent(
+          `Soy ${profiles[activeStep].firstName} y ... (continua escribiendo)`
+        )}`}
+      >
+        {children}
+      </a>
+    );
+  };
+
+  if (profiles.length < 1) {
     return (
       <Typography variant={"caption"}>
         Sé paciente por favor, estamos cargando los perfiles
@@ -36,10 +51,14 @@ function CarouselCards() {
   }
 
   return (
-    <Box sx={{ maxWidth: 400, flexGrow: 1 }}>
+    <Box
+      sx={{
+        maxWidth: 400,
+        flexGrow: 1,
+      }}
+    >
       <SwipeableViews index={activeStep}>
-        {mentors.map((step, index) => {
-          console.log("step", step.tecnologies);
+        {profiles.map((step, index) => {
           return (
             <Stack
               flex={1}
@@ -51,8 +70,13 @@ function CarouselCards() {
               <Typography variant={"body2"}>{step?.firstName}</Typography>
               <Typography variant={"caption"}>{step?.description}</Typography>
               {!!step?.tecnologies &&
-                step.tecnologies.map((x) => (
-                  <Chip label={x} color="primary" variant="outlined" />
+                step.tecnologies.map((x, index) => (
+                  <Chip
+                    label={x}
+                    color="primary"
+                    variant="outlined"
+                    key={index + "tech"}
+                  />
                 ))}
             </Stack>
           );
@@ -87,10 +111,12 @@ function CarouselCards() {
           </Button>
         }
       />
-      <Button variant={"outlined"} sx={{ mt: 4 }}>
-        <Typography>Haz match</Typography>
-        <FavoriteIcon sx={{ ml: 2 }} />
-      </Button>
+      <MailTo>
+        <Button variant={"outlined"} sx={{ mt: 4 }}>
+          <Typography>Haz match</Typography>
+          <FavoriteIcon sx={{ ml: 2 }} />
+        </Button>
+      </MailTo>
     </Box>
   );
 }
