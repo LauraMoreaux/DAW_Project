@@ -2,45 +2,23 @@ import * as React from "react";
 import { useTheme } from "@mui/material/styles";
 import Box from "@mui/material/Box";
 import MobileStepper from "@mui/material/MobileStepper";
-import Paper from "@mui/material/Paper";
 import Typography from "@mui/material/Typography";
 import Button from "@mui/material/Button";
 import KeyboardArrowLeft from "@mui/icons-material/KeyboardArrowLeft";
 import KeyboardArrowRight from "@mui/icons-material/KeyboardArrowRight";
 import SwipeableViews from "react-swipeable-views";
-import { autoPlay } from "react-swipeable-views-utils";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
-
-const AutoPlaySwipeableViews = autoPlay(SwipeableViews);
-
-const images = [
-  {
-    label: "San Francisco – Oakland Bay Bridge, United States",
-    imgPath:
-      "https://images.unsplash.com/photo-1537944434965-cf4679d1a598?auto=format&fit=crop&w=400&h=250&q=60",
-  },
-  {
-    label: "Bird",
-    imgPath:
-      "https://images.unsplash.com/photo-1538032746644-0212e812a9e7?auto=format&fit=crop&w=400&h=250&q=60",
-  },
-  {
-    label: "Bali, Indonesia",
-    imgPath:
-      "https://images.unsplash.com/photo-1537996194471-e657df975ab4?auto=format&fit=crop&w=400&h=250",
-  },
-  {
-    label: "Goč, Serbia",
-    imgPath:
-      "https://images.unsplash.com/photo-1512341689857-198e7e2f3ca8?auto=format&fit=crop&w=400&h=250&q=60",
-  },
-];
+import useProfiles from "../hooks/useProfiles";
+import { Chip, Stack } from "@mui/material";
+import FavoriteIcon from "@mui/icons-material/Favorite";
 
 function CarouselCards() {
+  const { mentors } = useProfiles();
   const theme = useTheme();
   const [activeStep, setActiveStep] = React.useState(0);
-  const maxSteps = images.length;
+  const maxSteps = mentors.length;
 
+  console.log("carousel", mentors);
   const handleNext = () => {
     setActiveStep((prevActiveStep) => prevActiveStep + 1);
   };
@@ -49,37 +27,37 @@ function CarouselCards() {
     setActiveStep((prevActiveStep) => prevActiveStep - 1);
   };
 
-  const handleStepChange = (step) => {
-    setActiveStep(step);
-  };
+  if (mentors.length < 1) {
+    return (
+      <Typography variant={"caption"}>
+        Sé paciente por favor, estamos cargando los perfiles
+      </Typography>
+    );
+  }
 
   return (
     <Box sx={{ maxWidth: 400, flexGrow: 1 }}>
-      <Paper
-        square
-        elevation={0}
-        sx={{
-          display: "flex",
-          alignItems: "center",
-          height: 50,
-          pl: 2,
-          bgcolor: "background.default",
-        }}
-      >
-        <Typography>{images[activeStep].label}</Typography>
-      </Paper>
-      <AutoPlaySwipeableViews
-        axis={theme.direction === "rtl" ? "x-reverse" : "x"}
-        index={activeStep}
-        onChangeIndex={handleStepChange}
-        enableMouseEvents
-      >
-        {images.map((step, index) => (
-          <div key={step.label}>
-            {Math.abs(activeStep - index) <= 2 ? <AccountCircleIcon /> : null}
-          </div>
-        ))}
-      </AutoPlaySwipeableViews>
+      <SwipeableViews index={activeStep}>
+        {mentors.map((step, index) => {
+          console.log("step", step.tecnologies);
+          return (
+            <Stack
+              flex={1}
+              alignItems={"center"}
+              spacing={2}
+              key={step.email + index}
+            >
+              <AccountCircleIcon />
+              <Typography variant={"body2"}>{step?.firstName}</Typography>
+              <Typography variant={"caption"}>{step?.description}</Typography>
+              {!!step?.tecnologies &&
+                step.tecnologies.map((x) => (
+                  <Chip label={x} color="primary" variant="outlined" />
+                ))}
+            </Stack>
+          );
+        })}
+      </SwipeableViews>
       <MobileStepper
         steps={maxSteps}
         position="static"
@@ -109,6 +87,10 @@ function CarouselCards() {
           </Button>
         }
       />
+      <Button variant={"outlined"} sx={{ mt: 4 }}>
+        <Typography>Haz match</Typography>
+        <FavoriteIcon sx={{ ml: 2 }} />
+      </Button>
     </Box>
   );
 }
