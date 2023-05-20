@@ -52,9 +52,13 @@ const MyAccount = () => {
   };
   return (
     <Container component="main" maxWidth="xs">
-      <Stack className={"main-div"}>
+      <Stack className={"main-div"} spacing={3}>
         <Typography component="h1" variant="h5">
           Mi cuenta
+        </Typography>
+        <Typography component="h4" variant="body1">
+          Edita tus preferencias para que podamos enseñarte en el carousel solo
+          los perfiles que más se adapten a ti.
         </Typography>
         <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
           <Grid container spacing={2}>
@@ -102,11 +106,7 @@ const MyAccount = () => {
               </Typography>
             </Grid>
           </Grid>
-          <Button
-            variant={"contained"}
-            disabled={disableButton}
-            onClick={() => navigate("/")}
-          >
+          <Button variant={"contained"} onClick={() => navigate("/")}>
             Mira tus posibles match
           </Button>
         </Box>
