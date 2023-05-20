@@ -40,8 +40,9 @@ function TabPanel(props) {
 
 const Home = () => {
   const { state } = useContext(AuthContext);
-  const { loggedUser, isLoginPending } = state;
+  const { loggedUser, isLoginPending, isLoggedUserMentor } = state;
   const [tab, setTab] = useState(0);
+  const headerCopy = isLoggedUserMentor ? "mentorizado" : "mentor";
 
   const handleChange = (event, newValue) => {
     setTab(newValue);
@@ -62,7 +63,7 @@ const Home = () => {
         {!!loggedUser ? (
           <>
             <Typography component="h3" variant="body1">
-              Es el momento de swipear y dar a match a tu perfil elegido
+              Es el momento de swipear y dar a match a tu {headerCopy} elegido
             </Typography>
             <CarouselCards />
           </>
