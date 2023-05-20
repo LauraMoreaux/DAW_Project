@@ -21,7 +21,7 @@ const Header = () => {
         ) : (
           <>
             <Stack flex={1} flexDirection={"row"} alignItems={"center"}>
-              <Link to={"/my-account"}>
+              <Link to={loggedUser ? "/my-account" : "/"}>
                 <Tooltip title={"Ir a tu cuenta"}>
                   <IconButton
                     size="large"
