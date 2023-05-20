@@ -17,6 +17,7 @@ function CarouselCards() {
   const theme = useTheme();
   const [activeStep, setActiveStep] = React.useState(0);
   const maxSteps = profiles.length;
+  const mailCopy = profiles[activeStep]?.mentor;
 
   const handleNext = () => {
     setActiveStep((prevActiveStep) => prevActiveStep + 1);
@@ -34,7 +35,9 @@ function CarouselCards() {
         }?subject=${encodeURIComponent(
           "¡Hola! Quiero ponerme en contacto contigo desde Mentor Match"
         )}&body=${encodeURIComponent(
-          `Soy ${profiles[activeStep].firstName} y ... (continua escribiendo)`
+          `Hola ${profiles[activeStep].firstName} , he visto que ${
+            mailCopy ? "eres mentor@" : "buscas mentor@"
+          } ... (continua dando un poco más de info)`
         )}`}
       >
         {children}
