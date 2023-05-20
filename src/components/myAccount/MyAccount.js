@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useState } from "react";
 import Typography from "@mui/material/Typography";
 import {
   Container,
@@ -7,7 +7,6 @@ import {
   Grid,
   Box,
   Button,
-  FormControl,
   Snackbar,
   Alert,
 } from "@mui/material";
@@ -17,21 +16,15 @@ import TextareaAutosize from "@mui/material/TextareaAutosize";
 import { useNavigate } from "react-router-dom";
 import { doc, getDoc, updateDoc } from "@firebase/firestore";
 import firestore from "../../firebase";
+import { AuthContext } from "../../context/auth-context";
 
 const MyAccount = () => {
   const navigate = useNavigate();
-  const [userEmail, setUserEmail] = useState();
+  const { state } = useContext(AuthContext);
+  const { loggedUser } = state;
   const [disableButton, setDisabledButton] = useState(true);
   const [error, setError] = useState({ value: false, message: null });
   const [technologies, setTechnologies] = useState();
-  useEffect(() => {
-    const userEmailStoraged = localStorage.getItem("user");
-    if (!userEmailStoraged) {
-      navigate("/login");
-    } else {
-      setUserEmail(JSON.parse(userEmailStoraged));
-    }
-  }, [navigate]);
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -71,7 +64,7 @@ const MyAccount = () => {
                 fullWidth
                 id="email"
                 name="email"
-                value={userEmail}
+                value={loggedUser}
                 inputProps={{ readOnly: true }}
               />
             </Grid>
@@ -87,9 +80,7 @@ const MyAccount = () => {
                 name="description"
               />
             </Grid>
-            <FormControl>
-              <TextFieldLanguages setTechnologies={setTechnologies} />
-            </FormControl>
+            <TextFieldLanguages setTechnologies={setTechnologies} />
           </Grid>
           <Button
             type="submit"
