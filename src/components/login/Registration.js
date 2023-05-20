@@ -39,7 +39,7 @@ const Registration = () => {
     // firebase
     const newUser = await addDoc(ref, formattedData);
     if (newUser.id) {
-      login();
+      login(data.get("email"), data.get("password"));
       navigate("/my-account");
     }
   };
