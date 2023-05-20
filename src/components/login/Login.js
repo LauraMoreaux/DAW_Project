@@ -29,7 +29,7 @@ const Login = () => {
 
   return (
     <Container component="main" maxWidth="xs">
-      <Stack className={"main-div"}>
+      <Stack className={"main-div"} spacing={6}>
         <Typography component="h1" variant="h5">
           {!!loggedUser ? "Bienvenido " + loggedUser : "Login"}
         </Typography>
