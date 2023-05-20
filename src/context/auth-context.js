@@ -13,6 +13,8 @@ export const AuthContext = React.createContext(null);
 
 const initialState = {
   loggedUser: null,
+  isLoggedUserMentor: false,
+  loggedUserTech: [],
   isLoginPending: true,
   loginError: null,
 };
@@ -28,6 +30,15 @@ export const ContextProvider = (props) => {
   };
   const setLoginError = (loginError) =>
     setState((prevState) => ({ ...prevState, loginError }));
+
+  const setLoggedUsedProfile = (isLoggedUserMentor) => {
+    setState((prevState) => ({ ...prevState, isLoggedUserMentor }));
+  };
+
+  const setLoggedUsedTech = (tecnologies) => {
+    setState((prevState) => ({ ...prevState, tecnologies }));
+  };
+
   useEffect(() => {
     async function checkLoggedUser() {
       const userIDStoraged = JSON.parse(localStorage.getItem("userID"));
@@ -35,8 +46,10 @@ export const ContextProvider = (props) => {
       if (userIDStoraged) {
         const docSnap = await getDoc(docRef);
         if (docSnap.exists()) {
-          const { email: emailBBDD } = docSnap.data();
+          const { email: emailBBDD, mentor, tecnologies } = docSnap.data();
           setLoginSuccess(emailBBDD);
+          setLoggedUsedProfile(mentor);
+          if (tecnologies) setLoggedUsedTech(tecnologies);
         } else {
           localStorage.removeItem("userID");
         }
@@ -45,7 +58,7 @@ export const ContextProvider = (props) => {
     checkLoggedUser()
       .then(() => setLoginPending(false))
       .catch(() => setLoginPending(false));
-  }, []);
+  }, [state.loggedUser]);
 
   const login = (email, password) => {
     setLoginPending(true);
