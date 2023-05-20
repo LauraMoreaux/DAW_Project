@@ -77,7 +77,7 @@ const Login = () => {
               <Alert severity="error" sx={{ width: "100%" }}>
                 {error.message}
               </Alert>
-            </Snackbar>{" "}
+            </Snackbar>
             <Button
               type="submit"
               fullWidth
