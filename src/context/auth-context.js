@@ -24,41 +24,38 @@ export const ContextProvider = (props) => {
 
   const setLoginPending = (isLoginPending) =>
     setState((prevState) => ({ ...prevState, isLoginPending }));
-
   const setLoginSuccess = (loggedUser) => {
     setState((prevState) => ({ ...prevState, loggedUser }));
   };
   const setLoginError = (loginError) =>
     setState((prevState) => ({ ...prevState, loginError }));
-
   const setLoggedUsedProfile = (isLoggedUserMentor) => {
     setState((prevState) => ({ ...prevState, isLoggedUserMentor }));
   };
-
-  const setLoggedUsedTech = (tecnologies) => {
-    setState((prevState) => ({ ...prevState, tecnologies }));
+  const setLoggedUsedTech = (loggedUserTech) => {
+    setState((prevState) => ({ ...prevState, loggedUserTech }));
   };
 
-  useEffect(() => {
-    async function checkLoggedUser() {
-      const userIDStoraged = JSON.parse(localStorage.getItem("userID"));
-      const docRef = doc(firestore, "users", userIDStoraged);
-      if (userIDStoraged) {
-        const docSnap = await getDoc(docRef);
-        if (docSnap.exists()) {
-          const { email: emailBBDD, mentor, tecnologies } = docSnap.data();
-          setLoginSuccess(emailBBDD);
-          setLoggedUsedProfile(mentor);
-          if (tecnologies) setLoggedUsedTech(tecnologies);
-        } else {
-          localStorage.removeItem("userID");
-        }
+  async function checkLoggedUser() {
+    const userIDStoraged = JSON.parse(localStorage.getItem("userID"));
+    const docRef = doc(firestore, "users", userIDStoraged);
+    if (userIDStoraged) {
+      const docSnap = await getDoc(docRef);
+      if (docSnap.exists()) {
+        const { email: emailBBDD, mentor, tecnologies } = docSnap.data();
+        setLoginSuccess(emailBBDD);
+        setLoggedUsedProfile(mentor);
+        if (tecnologies) setLoggedUsedTech(tecnologies);
+      } else {
+        localStorage.removeItem("userID");
       }
     }
+  }
+  useEffect(() => {
     checkLoggedUser()
       .then(() => setLoginPending(false))
       .catch(() => setLoginPending(false));
-  }, [state.loggedUser]);
+  }, []);
 
   const login = (email, password) => {
     setLoginPending(true);
@@ -69,6 +66,7 @@ export const ContextProvider = (props) => {
       setLoginPending(false);
       if (!error) {
         setLoginSuccess(email);
+        checkLoggedUser();
       } else {
         setLoginError(error);
       }
@@ -79,6 +77,8 @@ export const ContextProvider = (props) => {
     setLoginPending(false);
     setLoginSuccess(null);
     setLoginError(null);
+    setLoggedUsedTech([]);
+    setLoggedUsedProfile(false);
     localStorage.removeItem("userID");
   };
 
