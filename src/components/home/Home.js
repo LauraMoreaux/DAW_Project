@@ -1,11 +1,19 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useState } from "react";
 import { Link } from "react-router-dom";
 import Typography from "@mui/material/Typography";
-import { Button, List, ListItem, Stack, Container } from "@mui/material";
+import {
+  Button,
+  List,
+  ListItem,
+  Stack,
+  Container,
+  CircularProgress,
+} from "@mui/material";
 import Tabs from "@mui/material/Tabs";
 import Tab from "@mui/material/Tab";
 import Box from "@mui/material/Box";
 import CarouselCards from "../carousel/CarouselCards";
+import { AuthContext } from "../../context/auth-context";
 
 function a11yProps(index) {
   return {
@@ -31,23 +39,27 @@ function TabPanel(props) {
 }
 
 const Home = () => {
-  const [value, setValue] = useState(0);
-  const [loggedIn, setLoggedIn] = useState(false);
+  const { state } = useContext(AuthContext);
+  const { loggedUser, isLoginPending } = state;
+  const [tab, setTab] = useState(0);
 
   const handleChange = (event, newValue) => {
-    setValue(newValue);
+    setTab(newValue);
   };
-
-  useEffect(() => {
-    if (localStorage.getItem("userID")) {
-      setLoggedIn(true);
-    }
-  }, []);
+  if (isLoginPending) {
+    return (
+      <Container component="main">
+        <Stack className={"main-div"} display={"flex"} alignItems={"center"}>
+          <CircularProgress />
+        </Stack>
+      </Container>
+    );
+  }
 
   return (
     <Container component="main" maxWidth="xs">
       <Stack className={"main-div"} spacing={4}>
-        {loggedIn ? (
+        {!!loggedUser ? (
           <>
             <Typography component="h1" variant="h5">
               Encuentra a tu mentor/mentorizado:
@@ -62,18 +74,18 @@ const Home = () => {
             </Typography>
             <Typography>Las ventajas de usar esta web son:</Typography>
             <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
-              <Tabs value={value} onChange={handleChange}>
+              <Tabs value={tab} onChange={handleChange}>
                 <Tab label="Quiero ser mentorizado" {...a11yProps(0)} />
                 <Tab label="Quiero ser mentor" {...a11yProps(1)} />
               </Tabs>
             </Box>
-            <TabPanel value={value} index={0}>
+            <TabPanel value={tab} index={0}>
               <List>
                 <ListItem>Es gratuito</ListItem>
                 <ListItem>Tu mentor es un profesional</ListItem>
               </List>
             </TabPanel>
-            <TabPanel value={value} index={1}>
+            <TabPanel value={tab} index={1}>
               <List>
                 <ListItem>Es gratuito</ListItem>
                 <ListItem>
