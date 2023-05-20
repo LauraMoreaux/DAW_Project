@@ -24,7 +24,7 @@ const MyAccount = () => {
   const { loggedUser } = state;
   const [disableButton, setDisabledButton] = useState(true);
   const [error, setError] = useState({ value: false, message: null });
-  const [technologies, setTechnologies] = useState();
+  const [tecnologies, setTecnologies] = useState();
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -37,10 +37,9 @@ const MyAccount = () => {
     const docRef = doc(firestore, "users", userIDStoraged);
     const docSnap = await getDoc(docRef);
     if (docSnap.exists()) {
-      console.log("Document data:", docSnap.data());
       await updateDoc(docRef, {
         ...formValues,
-        technologies: technologies,
+        tecnologies,
       });
       setDisabledButton(false);
     } else {
@@ -68,7 +67,7 @@ const MyAccount = () => {
                 fullWidth
                 id="email"
                 name="email"
-                value={loggedUser}
+                value={loggedUser || ""}
                 inputProps={{ readOnly: true }}
               />
             </Grid>
@@ -84,7 +83,7 @@ const MyAccount = () => {
                 name="description"
               />
             </Grid>
-            <TextFieldLanguages setTechnologies={setTechnologies} />
+            <TextFieldLanguages setTechnologies={setTecnologies} />
           </Grid>
           <Button
             type="submit"
