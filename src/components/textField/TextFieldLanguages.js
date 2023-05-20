@@ -195,7 +195,7 @@ export default function TextFieldLanguages({ setTechnologies }) {
             <StyledTag label={option.title} {...getTagProps({ index })} />
           ))}
 
-          <input {...getInputProps()} id="technologies" name="technologies" />
+          <input {...getInputProps()} id="tecnologies" name="tecnologies" />
         </InputWrapper>
       </div>
       {groupedOptions.length > 0 ? (
