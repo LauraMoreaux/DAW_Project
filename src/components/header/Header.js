@@ -7,46 +7,54 @@ import IconButton from "@mui/material/IconButton";
 import MenuIcon from "@mui/icons-material/Menu";
 import LogoutIcon from "@mui/icons-material/Logout";
 import { AuthContext } from "../../context/auth-context";
+import { Tooltip } from "@mui/material";
 
 const Header = () => {
-  const { state, logout } = useContext(AuthContext);
+  const { state, logout, isLoginPending } = useContext(AuthContext);
   const { loggedUser } = state;
 
   return (
     <AppBar>
       <Toolbar sx={{ justifyContent: "space-between" }}>
-        <Link to={"/my-account"}>
-          <IconButton
-            size="large"
-            edge="start"
-            color="inherit"
-            aria-label="menu"
-            sx={{ mr: 2 }}
-          >
-            <MenuIcon />
-          </IconButton>
-        </Link>
-        {!!loggedUser ? (
+        {isLoginPending ? (
+          <></>
+        ) : (
           <>
+            <Link to={"/my-account"}>
+              <Tooltip title={"Ir a tu cuenta"}>
+                <IconButton
+                  size="large"
+                  edge="start"
+                  color="inherit"
+                  aria-label="menu"
+                  sx={{ mr: 2 }}
+                >
+                  <MenuIcon />
+                </IconButton>
+              </Tooltip>
+            </Link>
             <Link to={"/"}>
               <Typography variant="h6" component="div">
                 Mentor Match
               </Typography>
             </Link>
+            {!!loggedUser && (
+              <Link to={"/"}>
+                <Tooltip title={"Cerrar sesión"}>
+                  <IconButton
+                    size="large"
+                    edge="start"
+                    color="inherit"
+                    aria-label="menu"
+                    sx={{ mr: 2 }}
+                    onClick={() => logout()}
+                  >
+                    <LogoutIcon />
+                  </IconButton>
+                </Tooltip>
+              </Link>
+            )}
           </>
-        ) : (
-          <Link to={"/"}>
-            <IconButton
-              size="large"
-              edge="start"
-              color="inherit"
-              aria-label="menu"
-              sx={{ mr: 2 }}
-              onClick={() => logout()}
-            >
-              <LogoutIcon />
-            </IconButton>
-          </Link>
         )}
       </Toolbar>
     </AppBar>
