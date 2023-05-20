@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useContext } from "react";
 import { Link } from "react-router-dom";
 import Typography from "@mui/material/Typography";
 import {
@@ -11,40 +11,33 @@ import {
   Alert,
 } from "@mui/material";
 import Box from "@mui/material/Box";
-import firestore from "../../firebase";
-import { collection, getDocs, query, where } from "@firebase/firestore";
+import { AuthContext } from "../../context/auth-context";
 
 const Login = () => {
-  const [user, setUser] = useState(null);
-  const [error, setError] = useState({ value: false, message: undefined });
-  const ref = collection(firestore, "users");
+  const { state, login } = useContext(AuthContext);
+  const { loggedUser, loginError } = state;
 
   const handleSubmit = async (event) => {
     event.preventDefault();
     // form data
     const data = new FormData(event.currentTarget);
     const userEmail = data.get("email");
-    // firebase
-    const q = query(ref, where("email", "==", userEmail));
-    const querySnapshot = await getDocs(q);
-    querySnapshot.forEach((doc) => {
-      if (doc.data().password === data.get("password")) {
-        setError({ value: false, message: undefined });
-        setUser(doc.data());
-        localStorage.setItem("user", JSON.stringify(data.get("email")));
-      }
-    });
-    //handle error
-    setError({ value: true, message: "Prueba con otro email o contraseña" });
+    const userPassword = data.get("password");
+    //fetch login
+    login(userEmail, userPassword);
   };
 
   return (
     <Container component="main" maxWidth="xs">
       <Stack className={"main-div"}>
         <Typography component="h1" variant="h5">
-          {!user ? "Login" : "Bienvenido " + user.email}
+          {!!loggedUser ? "Bienvenido " + loggedUser : "Login"}
         </Typography>
-        {!user ? (
+        {!!loggedUser ? (
+          <Link to={"/"}>
+            <Button variant={"contained"}>Mira tus posibles match</Button>
+          </Link>
+        ) : (
           <Box
             component="form"
             onSubmit={handleSubmit}
@@ -60,7 +53,6 @@ const Login = () => {
               name="email"
               autoComplete="email"
               autoFocus
-              onChange={() => setError({ value: false, message: undefined })}
             />
             <TextField
               margin="normal"
@@ -71,11 +63,10 @@ const Login = () => {
               type="password"
               id="password"
               autoComplete="current-password"
-              onChange={() => setError({ value: false, message: undefined })}
             />
-            <Snackbar open={error.value} autoHideDuration={500}>
+            <Snackbar open={!!loginError} autoHideDuration={200}>
               <Alert severity="error" sx={{ width: "100%" }}>
-                {error.message}
+                {loginError?.message}
               </Alert>
             </Snackbar>
             <Button
@@ -92,10 +83,6 @@ const Login = () => {
               </Grid>
             </Grid>
           </Box>
-        ) : (
-          <Link to={"/"}>
-            <Button variant={"contained"}>Mira tus posibles match</Button>
-          </Link>
         )}
       </Stack>
     </Container>
