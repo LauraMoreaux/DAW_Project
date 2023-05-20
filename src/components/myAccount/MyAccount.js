@@ -1,36 +1,61 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import Typography from "@mui/material/Typography";
-import { Container, Stack, TextField, Grid, Box, Button } from "@mui/material";
+import {
+  Container,
+  Stack,
+  TextField,
+  Grid,
+  Box,
+  Button,
+  FormControl,
+  Snackbar,
+  Alert,
+} from "@mui/material";
 import TextFieldLanguages from "../textField/TextFieldLanguages";
 import TextareaAutosize from "@mui/material/TextareaAutosize";
 
-import { Link, useNavigate } from "react-router-dom";
-import { addDoc, collection } from "@firebase/firestore";
+import { useNavigate } from "react-router-dom";
+import { doc, getDoc, updateDoc } from "@firebase/firestore";
 import firestore from "../../firebase";
 
 const MyAccount = () => {
   const navigate = useNavigate();
-  const ref = collection(firestore, "users");
-
+  const [userEmail, setUserEmail] = useState();
+  const [disableButton, setDisabledButton] = useState(true);
+  const [error, setError] = useState({ value: false, message: null });
+  const [technologies, setTechnologies] = useState();
   useEffect(() => {
-    const user = localStorage.getItem("user");
-    if (!user) {
+    const userEmailStoraged = localStorage.getItem("user");
+    if (!userEmailStoraged) {
       navigate("/login");
+    } else {
+      setUserEmail(JSON.parse(userEmailStoraged));
     }
-  }, []);
+  }, [navigate]);
 
   const handleSubmit = async (event) => {
     event.preventDefault();
     //form data
     const data = new FormData(event.currentTarget);
     const formValues = Object.fromEntries(data);
-    console.log(formValues);
+
     // firebase
-    /*    const newUser = await addDoc(ref, "");
-    if (newUser.id) {
-      console.log(newUser.id);
-      navigate("/my-account");
-    }*/
+    const userIDStoraged = JSON.parse(localStorage.getItem("userID"));
+    const docRef = doc(firestore, "users", userIDStoraged);
+    const docSnap = await getDoc(docRef);
+    if (docSnap.exists()) {
+      console.log("Document data:", docSnap.data());
+      await updateDoc(docRef, {
+        ...formValues,
+        technologies: technologies,
+      });
+      setDisabledButton(false);
+    } else {
+      setError({
+        value: true,
+        message: "Ups! Ha habido un error, inténtelo en unos minutos",
+      });
+    }
   };
   return (
     <Container component="main" maxWidth="xs">
@@ -46,7 +71,7 @@ const MyAccount = () => {
                 fullWidth
                 id="email"
                 name="email"
-                value={"El email de bbdd"}
+                value={userEmail}
                 inputProps={{ readOnly: true }}
               />
             </Grid>
@@ -58,29 +83,47 @@ const MyAccount = () => {
                 minRows={3}
                 maxRows={7}
                 className={"text-area-width"}
+                id="description"
+                name="description"
               />
             </Grid>
-            <TextFieldLanguages />
+            <FormControl>
+              <TextFieldLanguages setTechnologies={setTechnologies} />
+            </FormControl>
           </Grid>
           <Button
             type="submit"
             fullWidth
             variant="contained"
             sx={{ mt: 3, mb: 2 }}
+            disabled={!disableButton}
           >
             Guardar datos
           </Button>
           <Grid container justifyContent={"center"} my={3}>
             <Grid item>
-              <Typography component="h5" variant="h6">
+              <Typography
+                component="h5"
+                variant="h6"
+                color={disableButton ? "grey" : "initial"}
+              >
                 ¿Todo listo?
               </Typography>
             </Grid>
           </Grid>
-          <Link to={"/"}>
-            <Button variant={"contained"}>Mira tus posibles match</Button>
-          </Link>
+          <Button
+            variant={"contained"}
+            disabled={disableButton}
+            onClick={() => navigate("/")}
+          >
+            Mira tus posibles match
+          </Button>
         </Box>
+        <Snackbar open={error.value} autoHideDuration={300}>
+          <Alert severity="error" sx={{ width: "100%" }}>
+            {error.message}
+          </Alert>
+        </Snackbar>
       </Stack>
     </Container>
   );
