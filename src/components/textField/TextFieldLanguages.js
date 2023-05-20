@@ -5,6 +5,7 @@ import CheckIcon from "@mui/icons-material/Check";
 import CloseIcon from "@mui/icons-material/Close";
 import { styled } from "@mui/material/styles";
 import { autocompleteClasses } from "@mui/material/Autocomplete";
+import { useEffect } from "react";
 
 const Root = styled("div")(
   ({ theme }) => `
@@ -158,7 +159,7 @@ const Listbox = styled("ul")(
 `
 );
 
-export default function TextFieldLanguages() {
+export default function TextFieldLanguages({ setTechnologies }) {
   const {
     getRootProps,
     getInputLabelProps,
@@ -178,6 +179,11 @@ export default function TextFieldLanguages() {
     getOptionLabel: (option) => option.title,
   });
 
+  useEffect(() => {
+    const filteredValues = value.map((x) => x.title);
+    setTechnologies(filteredValues);
+  }, [value]);
+
   return (
     <Root>
       <div {...getRootProps()}>
@@ -189,7 +195,7 @@ export default function TextFieldLanguages() {
             <StyledTag label={option.title} {...getTagProps({ index })} />
           ))}
 
-          <input {...getInputProps()} />
+          <input {...getInputProps()} id="technologies" name="technologies" />
         </InputWrapper>
       </div>
       {groupedOptions.length > 0 ? (
