@@ -13,7 +13,7 @@ export const AuthContext = React.createContext(null);
 
 const initialState = {
   loggedUser: null,
-  isLoginPending: false,
+  isLoginPending: true,
   loginError: null,
 };
 
@@ -29,7 +29,6 @@ export const ContextProvider = (props) => {
   const setLoginError = (loginError) =>
     setState((prevState) => ({ ...prevState, loginError }));
   useEffect(() => {
-    setLoginPending(true);
     async function checkLoggedUser() {
       const userIDStoraged = JSON.parse(localStorage.getItem("userID"));
       const docRef = doc(firestore, "users", userIDStoraged);
@@ -43,7 +42,9 @@ export const ContextProvider = (props) => {
         }
       }
     }
-    checkLoggedUser().then(() => setLoginPending(false));
+    checkLoggedUser()
+      .then(() => setLoginPending(false))
+      .catch(() => setLoginPending(false));
   }, []);
 
   const login = (email, password) => {
