@@ -47,9 +47,18 @@ function CarouselCards() {
 
   if (profiles.length < 1) {
     return (
-      <Typography variant={"caption"}>
-        Sé paciente por favor, estamos cargando los perfiles
-      </Typography>
+      <>
+        <Typography variant={"caption"}>
+          Ups! De momento no hay perfiles acordes a ti, pero no desistas, edita
+          tus preferencias en el menú, o pulsa el botón para actualizar!
+        </Typography>
+        <Button
+          variant={"outlined"}
+          onClick={() => window.location.reload(false)}
+        >
+          Descubre más perfiles
+        </Button>
+      </>
     );
   }
 
