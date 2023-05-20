@@ -1,28 +1,50 @@
 import { collection, getDocs, query, where } from "@firebase/firestore";
 import firestore from "../../firebase";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, useContext } from "react";
+import { AuthContext } from "../../context/auth-context";
 
 const useProfiles = () => {
   const ref = collection(firestore, "users");
-  const [mentors, setMentor] = useState([]);
+  const { state } = useContext(AuthContext);
+  const { isLoggedUserMentor, loggedUserTech } = state;
+  const [profiles, setProfiles] = useState([]);
   const effectRun = useRef(false);
+  let querySnapshot;
+  const queryAllProfiles = query(
+    ref,
+    where("mentor", "==", !isLoggedUserMentor)
+  );
+  const queryTechnologies = query(
+    ref,
+    where("mentor", "==", !isLoggedUserMentor),
+    where(
+      "tecnologies",
+      loggedUserTech.length > 0 ? "array-contains-any" : "",
+      loggedUserTech
+    )
+  );
 
-  const getMentors = async () => {
-    const q = query(ref, where("mentor", "==", true));
-    const querySnapshot = await getDocs(q);
+  const getProfiles = async () => {
+    if (loggedUserTech.length > 0) {
+      querySnapshot = await getDocs(queryTechnologies);
+    } else {
+      querySnapshot = await getDocs(queryAllProfiles);
+    }
     querySnapshot.forEach((doc) => {
-      setMentor((oldArray) => [...oldArray, doc.data()]);
+      setProfiles((oldArray) => [...oldArray, doc.data()]);
     });
   };
 
   useEffect(() => {
     if (effectRun.current === false) {
-      getMentors();
+      getProfiles();
     }
     return () => (effectRun.current = true);
   }, []);
 
-  return { mentors };
+  console.log(profiles);
+
+  return { profiles };
 };
 
 export default useProfiles;
