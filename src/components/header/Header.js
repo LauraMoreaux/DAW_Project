@@ -47,6 +47,7 @@ const Header = () => {
               onClick={() => {
                 setLogoutIcon(false);
                 localStorage.removeItem("user");
+                localStorage.removeItem("userID");
               }}
             >
               <LogoutIcon />
